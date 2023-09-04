@@ -477,9 +477,11 @@ class DashboardServiceSource(TopologyRunnerMixin, Source, ABC):
         if isinstance(entity_request, CreateDashboardDataModelRequest):
             context_names.append("model")
 
-        return fqn._build(  # pylint: disable=protected-access
-            *context_names, entity_request.name.__root__
-        )
+        if hasattr(entity_request, "name"):
+            return fqn._build(  # pylint: disable=protected-access
+                *context_names, entity_request.name.__root__
+            )
+        return fqn._build(*context_names)  # pylint: disable=protected-access
 
     def check_database_schema_name(self, database_schema_name: str):
 
